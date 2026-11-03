@@ -1,6 +1,8 @@
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
+#include <array>
+#include <filesystem>
 
 #include "flutter_window.h"
 #include "utils.h"
@@ -17,7 +19,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   // plugins.
   ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
 
-  flutter::DartProject project(L"data");
+  // Resolve the bundle next to this executable, independent of shortcut CWD.
+  std::array<wchar_t, 32768> executable_path{};
+  const DWORD path_size = ::GetModuleFileNameW(nullptr, executable_path.data(),
+                                               static_cast<DWORD>(executable_path.size()));
+  if (path_size == 0 || path_size >= executable_path.size()) {
+    ::CoUninitialize();
+    return EXIT_FAILURE;
+  }
+  const auto data_path = std::filesystem::path(executable_path.data()).parent_path() / L"data";
+  flutter::DartProject project(data_path.wstring());
 
   std::vector<std::string> command_line_arguments =
       GetCommandLineArguments();
@@ -27,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
-  if (!window.Create(L"e-dukon", origin, size)) {
+  if (!window.Create(L"e-dukon | Windows 0.3.2", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

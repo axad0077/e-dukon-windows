@@ -18,6 +18,8 @@ jobs:
         working-directory: dokon_boshqaruv
     steps:
       - uses: actions/checkout@v4
+      - name: Verify configured backend route (read only)
+        run: ./tool/backend_probe.ps1
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
@@ -44,3 +46,14 @@ jobs:
             dist/SHA256SUMS.txt
           if-no-files-found: error
           retention-days: 14
+      - name: Upload startup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e-dukon-Windows-evidence
+          path: |
+            dist/backend-check.json
+            dist/windows-startup.png
+            dist/windows-startup-check.json
+          if-no-files-found: warn
+          retention-days: 7
