@@ -1,0 +1,59 @@
+name: Windows Setup
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+concurrency:
+  group: windows-setup-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  installer:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: dokon_boshqaruv
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify configured backend route (read only)
+        run: ./tool/backend_probe.ps1
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: '3.44.0'
+          cache: true
+      - name: Install Inno Setup 6
+        run: |
+          $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
+          if (-not (Test-Path $iscc)) {
+            choco install innosetup --version=6.4.3 --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { throw 'Inno Setup ornatilmadi.' }
+          }
+      - name: Test, build and package
+        run: ./tool/build_windows.ps1
+      - name: Install and launch smoke test
+        run: ./tool/smoke_windows.ps1
+      - name: Upload installer and portable app
+        uses: actions/upload-artifact@v4
+        with:
+          name: e-dukon-Windows
+          path: |
+            dist/e-dukon-Setup.exe
+            dist/e-dukon-Windows-portable.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload startup evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e-dukon-Windows-evidence
+          path: |
+            dist/backend-check.json
+            dist/windows-startup.png
+            dist/windows-startup-check.json
+          if-no-files-found: warn
+          retention-days: 7
