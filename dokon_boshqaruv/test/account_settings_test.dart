@@ -68,7 +68,14 @@ void main() {
     await tester.scrollUntilVisible(find.text('Joriy tarif'), 250,
         scrollable: find.byType(Scrollable).first);
     expect(find.text('Joriy tarif'), findsOneWidget);
-    expect(find.text('Tarifni uzaytirish'), findsOneWidget);
+    final paymentButton = find.widgetWithText(
+      FilledButton, 'inPAY orqali to‘lash',
+    );
+    await tester.scrollUntilVisible(paymentButton, 250,
+        scrollable: find.byType(Scrollable).first);
+    expect(paymentButton, findsOneWidget);
+    expect(tester.widget<FilledButton>(paymentButton).onPressed, isNotNull);
+    expect(find.text('POS savdo'), findsOneWidget);
   });
 
   testWidgets('username form posts the new value and refreshes the profile',
@@ -92,3 +99,4 @@ void main() {
     expect(find.text('new-seller'), findsOneWidget);
   });
 }
+
