@@ -14,7 +14,7 @@ String get _apiBaseUrl {
   final configured = _configuredApiBaseUrl.trim();
   final value = configured.isNotEmpty
       ? configured
-      : 'https://dukonboshqaruvi-production.up.railway.app/api/v1/';
+      : 'https://dukonboshqaruv-production.up.railway.app/api/v1/';
 
   return value.endsWith('/') ? value : '$value/';
 }
