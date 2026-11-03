@@ -25,7 +25,7 @@ jobs:
           $iscc = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe'
           if (-not (Test-Path $iscc)) {
             choco install innosetup --version=6.4.3 --yes --no-progress
-            if ($LASTEXITCODE -ne 0) { throw 'Inno Setup o‘rnatilmadi.' }
+            if ($LASTEXITCODE -ne 0) { throw 'Inno Setup ornatilmadi.' }
           }
       - name: Test, build and package
         run: ./tool/build_windows.ps1

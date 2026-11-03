@@ -14,7 +14,7 @@ try {
     $app.Refresh()
     if ($app.HasExited) { throw "Ilova ishga tushib yopildi. Kod: $($app.ExitCode)" }
     if ($app.MainWindowHandle -eq 0) { throw 'Windows oynasi ochilmadi.' }
-    Write-Host 'Installer va boshlang‘ich oyna smoke tekshiruvidan o‘tdi. Savdo funksiyalari bu tekshiruvga kirmaydi.'
+    Write-Host 'Installer va boshlangich oyna smoke tekshiruvidan otdi. Savdo funksiyalari bu tekshiruvga kirmaydi.'
 } finally {
     if ($app -and -not $app.HasExited) { Stop-Process -Id $app.Id -Force }
     $uninstaller = Join-Path $target 'unins000.exe'

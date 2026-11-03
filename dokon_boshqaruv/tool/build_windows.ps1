@@ -41,12 +41,12 @@ if (-not $IsccPath) {
     if ($compiler) { $IsccPath = $compiler.Source }
     else { $IsccPath = Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6/ISCC.exe' }
 }
-if (-not (Test-Path $IsccPath)) { throw 'Inno Setup 6 o‘rnatilmagan.' }
+if (-not (Test-Path $IsccPath)) { throw 'Inno Setup 6 ornatilmagan.' }
 $versionMatch = Select-String -Path pubspec.yaml -Pattern '^version:\s*([0-9]+\.[0-9]+\.[0-9]+)'
 if (-not $versionMatch) { throw 'pubspec.yaml version topilmadi.' }
 $version = $versionMatch.Matches[0].Groups[1].Value
 & $IsccPath "/DAppVersion=$version" "/DReleaseDir=$release" "/DOutputDir=$dist" 'windows/installer/setup.iss'
-if ($LASTEXITCODE -ne 0) { throw 'Setup.exe yig‘ilmadi.' }
+if ($LASTEXITCODE -ne 0) { throw 'Setup.exe yigilmadi.' }
 Compress-Archive -Path (Join-Path $release '*') -DestinationPath (Join-Path $dist 'e-dukon-Windows-portable.zip') -Force
 Get-FileHash (Join-Path $dist 'e-dukon-Setup.exe') -Algorithm SHA256 |
     ForEach-Object { "$($_.Hash.ToLower())  e-dukon-Setup.exe" } |
