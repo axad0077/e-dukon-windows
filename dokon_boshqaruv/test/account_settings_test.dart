@@ -68,8 +68,9 @@ void main() {
     await tester.scrollUntilVisible(find.text('Joriy tarif'), 250,
         scrollable: find.byType(Scrollable).first);
     expect(find.text('Joriy tarif'), findsOneWidget);
-    final paymentButton = find.widgetWithText(
-      FilledButton, 'inPAY orqali to‘lash',
+    final paymentButton = find.ancestor(
+      of: find.text('inPAY orqali to‘lash'),
+      matching: find.byWidgetPredicate((widget) => widget is FilledButton),
     );
     await tester.scrollUntilVisible(paymentButton, 250,
         scrollable: find.byType(Scrollable).first);
